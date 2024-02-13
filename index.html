@@ -1,91 +1,234 @@
-Вот обновленная версия кода с добавленной базой данных видеокарт:
-
-```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PC Component Selection</title>
-  <style>
-    /* CSS стили остаются неизменными */
-  </style>
-  <script>
-    // База данных процессоров
-    var cpus = {
-      "Amd Ryzen": {
-        "5600x": {"tier": "Tier2", "socket": "AM4", "price": 15000, "tgp": "low"},
-        "5800x": {"tier": "Tier1", "socket": "AM4", "price": 24000, "tgp": "high"},
-        "5950x": {"tier": "Tier0", "socket": "AM4", "price": 65000, "tgp": "very high"},
-        "7600x": {"tier": "Tier2", "socket": "AM5", "price": 25000, "tgp": "medium"},
-        "7700x": {"tier": "Tier1", "socket": "AM5", "price": 35000, "tgp": "high"},
-        "7900x": {"tier": "Tier1", "socket": "AM5", "price": 70000, "tgp": "very high"}
-      },
-      "Intel core": {
-        "12300f": {"tier": "Tier3", "socket": "LGA1700", "price": 10000, "tgp": "low"},
-        "12600k": {"tier": "Tier2", "socket": "LGA1700", "price": 15000, "tgp": "medium"},
-        "12700k": {"tier": "Tier1", "socket": "LGA1700", "price": 25000, "tgp": "high"},
-        "12900k": {"tier": "Tier0", "socket": "LGA1700", "price": 50000, "tgp": "very high"},
-        "13330f": {"tier": "Tier3", "socket": "LGA1700", "price": 15000, "tgp": "low"},
-        "13600k": {"tier": "Tier2", "socket": "LGA1700", "price": 20000, "tgp": "medium"},
-        "13700k": {"tier": "Tier1", "socket": "LGA1700", "price": 30000, "tgp": "high"},
-        "13900k": {"tier": "Tier0", "socket": "LGA1700", "price": 60000, "tgp": "very high"}
-      }
-    };
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Components Selection</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
 
-    // База данных материнских плат
-    var motherboards = {
-      "AM5": {
-        "Tier 1": 30000,
-        "Tier0": 55000,
-        "Tier2": 20000
-      },
-      "AM4": {
-        "Tier1": 20000,
-        "Tier2": 10000
-      },
-      "LGA1700": {
-        "Tier2": 15000,
-        "Tier1": 30000,
-        "Tier0": 55000
-      }
-    };
+        h1 {
+            text-align: center;
+            color: #4285f4;
+        }
 
-    // База данных видеокарт
-    var videoCards = {
-      "GeForce RTX 3060": { "low TGP": 25000, "tier 3": true },
-      "GeForce RTX 3060 Ti": { "low TGP": 30000, "tier 3": true },
-      "GeForce RTX 3070": { "medium TGP": 45000, "tier 2": true },
-      "GeForce RTX 3070 Ti": { "medium TGP": 50000, "tier 2": true },
-      "GeForce RTX 3080": { "high TGP": 70000, "tier 1": true },
-      "GeForce RTX 3080 Ti": { "very high TGP": 90000, "tier 1": true },
-      "GeForce RTX 3090": { "very high TGP": 130000, "tier 0": true },
-      "GeForce RTX 3090 Ti": { "very high TGP": 151800, "tier 0": true },
-      "GeForce RTX 4060": { "medium TGP": 36000, "tier 2": true },
-      "GeForce RTX 4060 Ti": { "medium TGP": 44591, "tier 2": true },
-      "GeForce RTX 4070": { "Super high TGP": 60734, "tier 1": true },
-      "GeForce RTX 4070 Ti": { "Super high TGP": 107273, "tier 1": true },
-      "GeForce RTX 4080": { "Super high TGP": 138000, "tier 0": true },
-      "GeForce RTX 4090": { "very high TGP": 228360, "tier 0": true },
-      "Radeon RX 6700 XT": { "medium TGP": 35000, "tier 2": true },
-      "Radeon RX 6750 XT": { "medium TGP": 40000, "tier 2": true },
-      "Radeon RX 6800": { "high TGP": 50000, "tier 1": true },
-      "Radeon RX 6800 XT": { "high TGP": 55000, "tier 1": true },
-      "Radeon RX 6900 XT": { "very high TGP": 70000, "tier 1": true },
-      "Radeon RX 6950 XT": { "very high TGP": 75000, "tier 1": true },
-      "Radeon RX 7600 XT": { "medium TGP": 33641, "tier 2": true },
-      "Radeon RX 7900 XT": { "very high TGP": 104703, "tier 0": true },
-      "Radeon RX 7900 XTX": { "very high TGP": 113451, "tier 0": true }
-    };
+        main {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-    function calculateTotal() {
-      var cpuPrice = parseInt(document.getElementById("cpu").value);
-      var motherboardPrice = parseInt(document.getElementById("motherboard").value);
-      var gpuPrice = parseInt(document.getElementById("gpu").value);
-      var psuPrice = parseInt(document.getElementById("psu").value);
-      var ramPrice = parseInt(document.getElementById("ram").value);
-      var ssdPrice = parseInt(document.getElementById("ssd").value);
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+        }
 
-      var total = cpuPrice + motherboardPrice + gpuPrice + psuPrice + ramPrice + ssdPrice;
+        select,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #333;
+        }
 
-      document.getElementById("total").
+        button {
+            background-color: #4285f4;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        p {
+            font-size: 18px;
+            text-align: center;
+            margin-top: 10px;
+            color: #555;
+        }
+
+        .price {
+            color: #4285f4;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Build Your PC</h1>
+
+    <main>
+        <label for="processor">Processor:</label>
+        <select name="processor" id="proc" onchange="updateMotherboards(); updateVideoCard();">
+            <!-- AMD Ryzen Processors -->
+            <option value="" selected disabled>Select Processor</option>
+            <option value="amd_ryzen_5600x" data-compatibility="AM4, AMD, 5000, Tier2" data-price="15000">Ryzen 5 5600x - Tier2,AM4 <span class="price">₽15000</span>, low tgp</option>
+            <option value="amd_ryzen_5800x" data-compatibility="AM4, AMD, 5000, Tier1" data-price="24000">Ryzen 7 5800x - Tier1,AM4 <span class="price">₽24000</span>, high tgp</option>
+            <option value="amd_ryzen_5950x" data-compatibility="AM4, AMD, 5000, Tier0" data-price="65000">Ryzen 9 5950x - Tier0,AM4 <span class="price">₽65000</span>, very high tgp</option>
+            <option value="amd_ryzen_7600x" data-compatibility="AM5, AMD, 7000, Tier2" data-price="25000">Ryzen 5 7600x - Tier2,AM5 <span class="price">₽25000</span>, medium tgp</option>
+            <option value="amd_ryzen_7700x" data-compatibility="AM5, AMD, 7000, Tier1" data-price="35000">Ryzen 7 7700x - Tier1,AM5 <span class="price">₽35000</span>, high tgp</option>
+            <option value="amd_ryzen_7900x" data-compatibility="AM5, AMD, 7000, Tier1" data-price="70000">Ryzen 9 7900x - Tier1,AM5 <span class="price">₽70000</span>, very high tgp</option>
+
+            <!-- Intel Core Processors -->
+            <option value="intel_12300f" data-compatibility="LGA1700, Intel, 12000, Tier2" data-price="10000">Core i3-12300f - Tier3,LGA1700 <span class="price">₽10000</span>, low tgp</option>
+            <option value="intel_12600k" data-compatibility="LGA1700, Intel, 12000, Tier2" data-price="15000">Core i5-12600k - Tier2,LGA1700 <span class="price">₽15000</span>, medium tgp</option>
+            <option value="intel_12700k" data-compatibility="LGA1700, Intel, 12000, Tier1" data-price="25000">Core i7-12700k - Tier1,LGA1700 <span class="price">₽25000</span>, high tgp</option>
+            <option value="intel_12900k" data-compatibility="LGA1700, Intel, 12000, Tier0" data-price="50000">Core i9-12900k - Tier0,LGA1700 <span class="price">₽50000</span>, very high tgp</option>
+            <option value="intel_13330f" data-compatibility="LGA1700, Intel, 13000, Tier2" data-price="15000">Core i3-13330f - Tier3,LGA1700<span class="price">₽15000</span>, low tgp</option>
+            <option value="intel_13600k" data-compatibility="LGA1700, Intel, 13000, Tier2" data-price="20000">Core i5-13600k - Tier2,LGA1700 <span class="price">₽20000</span>, medium tgp</option>
+            <option value="intel_13700k" data-compatibility="LGA1700, Intel, 13000, Tier1" data-price="30000">Core i7-13700k - Tier1,LGA1700<span class="price">₽30000</span>, high tgp</option>
+            <option value="intel_13900k" data-compatibility="LGA1700, Intel, 13000, Tier0" data-price="60000">Core i9-13900k - Tier0,LGA1700 <span class="price">₽60000</span>, very high tgp</option>
+        </select>
+
+        <label for="motherboard">Motherboard:</label>
+        <select name="motherboard" id="matka">
+            <!-- (Motherboard options...) -->
+        </select>
+
+        <label for="videocard">Video Card:</label>
+        <select name="videocard" id="gpu">
+            <!-- (Video card options...) -->
+        </select>
+        <label for="powersupply">Power Supply Unit:</label>
+        <select name="powersupply" id="psu">
+            <option value="psu_650w" data-price="7000">650W - Tier3 <span class="price">₽7000</span></option>
+            <option value="psu_850w" data-price="10000">850W - Tier2 <span class="price">₽10000</span></option>
+            <option value="psu_1000w" data-price="12000">1000W - Tier1 <span class="price">₽12000</span></option>
+            <option value="psu_1200w" data-price="16000">1200W - Tier0 <span class="price">₽16000</span></option>
+        </select>
+
+        <label for="ram">Amount of RAM:</label>
+        <select name="ram" id="ram">
+            <option value="ram_16gb" data-price="10000">16GB <span class="price">₽10000</span></option>
+            <option value="ram_32gb" data-price="14000">32GB <span class="price">₽14000</span></option>
+        </select>
+
+        <label for="ssd">SSD:</label>
+        <select name="ssd" id="ssd">
+            <option value="ssd_500gb" data-price="5000">500GB <span class="price">₽5000</span></option>
+            <option value="ssd_1tb" data-price="9000">1TB <span class="price">₽9000</span></option>
+            <option value="ssd_2tb" data-price="13000">2TB <span class="price">₽13000</span></option>
+            <option value="ssd_3tb" data-price="16000">3TB <span class="price">₽16000</span></option>
+        </select>
+        <button onclick="calculateTotal()">Calculate Total Price</button>
+        <p>Total Price: <span id="totalPrice" class="price">0</span></p>
+    </main>
+
+    <script>
+        function updateMotherboards() {
+            const selectedProcessor = document.getElementById('proc');
+            const compatibilityTags = selectedProcessor.options[selectedProcessor.selectedIndex].getAttribute('data-compatibility').split(', ');
+
+            const motherboardSelect = document.getElementById('matka');
+            motherboardSelect.innerHTML = ''; // Clear existing options
+
+            // Sample motherboard data
+            const motherboards = [
+                { name: 'ASUS Rog strix, socket:AM5, tier 1', compatibility: 'AM5, AMD, Tier1', 'data-price': 30000 },
+                { name: 'ASUS Rog strix, socket:AM5, tier0', compatibility: 'AM5, AMD, Tier0', 'data-price': 55000 },
+                { name: 'ASUS TUF, socket:AM5, tier2', compatibility: 'AM5, AMD, Tier2', 'data-price': 20000 },
+                { name: 'ASUS Rog strix, socket:AM4, tier1', compatibility: 'AM4, AMD, Tier1', 'data-price': 20000 },
+                { name: 'ASUS Rog strix, socket:AM4, tier0', compatibility: 'AM4, AMD, Tier0', 'data-price': 10000 },
+                { name: 'ASUS TUF, socket:AM4, tier2', compatibility: 'AM4, AMD, Tier2', 'data-price': 10000 },
+                { name: 'ASUS Rog strix intel, socket:LGA1700, tier2', compatibility: 'LGA1700, Intel, Tier2', 'data-price': 15000 },
+                { name: 'ASUS Rog strix intel, socket:LGA1700, tier1', compatibility: 'LGA1700, Intel, Tier1', 'data-price': 30000 },
+                { name: 'ASUS ROG Strix intel, socket:LGA1700, tier0', compatibility: 'LGA1700, Intel, Tier0', 'data-price': 55000 }
+            ];
+
+            // Filter compatible motherboards based on processor compatibility
+            const compatibleMotherboards = motherboards.filter(board =>
+                board.compatibility.split(', ').every(tag => compatibilityTags.includes(tag))
+            );
+
+            // Add compatible motherboards to the select dropdown
+            compatibleMotherboards.forEach(board => {
+                const option = document.createElement('option');
+                option.value = board.name;
+                option.textContent = `${board.name} - ₽${(board['data-price']).toLocaleString()}`;
+                option.setAttribute('data-price', board['data-price']);
+                motherboardSelect.appendChild(option);
+            });
+        }
+
+        function updateVideoCard() {
+            const selectedProcessor = document.getElementById('proc');
+            const compatibilityTags = selectedProcessor.options[selectedProcessor.selectedIndex].getAttribute('data-compatibility').split(', ');
+
+            const videoCardSelect = document.getElementById('gpu');
+            videoCardSelect.innerHTML = ''; // Clear existing options
+
+            // Sample video card data
+            const videoCards = [
+                { name: 'GeForce RTX 3060', compatibility: 'Tier2', tgp: 'low', 'data-price': 25000 },
+                { name: 'GeForce RTX 3060 Ti', compatibility: 'Tier2', tgp: 'low', 'data-price': 30000 },
+                { name: 'GeForce RTX 3070', compatibility: 'Tier2', tgp: 'medium', 'data-price': 45000 },
+                { name: 'GeForce RTX 3070 Ti', compatibility: 'Tier2', tgp: 'medium', 'data-price': 50000 },
+                { name: 'GeForce RTX 3080', compatibility: 'Tier1', tgp: 'high', 'data-price': 70000 },
+                { name: 'GeForce RTX 3080 Ti', compatibility: 'Tier1', tgp: 'very high', 'data-price': 90000 },
+                { name: 'GeForce RTX 3090', compatibility: 'Tier0', tgp: 'very high', 'data-price': 130000 },
+                { name: 'GeForce RTX 3090 Ti', compatibility: 'Tier0', tgp: 'very high', 'data-price': 151800 },
+                { name: 'GeForce RTX 4060', compatibility: 'Tier2', tgp: 'medium', 'data-price': 36000 },
+                { name: 'GeForce RTX 4060 Ti', compatibility: 'Tier2', tgp: 'medium', 'data-price': 44591 },
+                { name: 'GeForce RTX 4070', compatibility: 'Tier1', tgp: 'super high', 'data-price': 60734 },
+                { name: 'GeForce RTX 4070 Ti', compatibility: 'Tier1', tgp: 'super high', 'data-price': 107273 },
+                { name: 'GeForce RTX 4080', compatibility: 'Tier0', tgp: 'super high', 'data-price': 138000 },
+                { name: 'GeForce RTX 4090', compatibility: 'Tier0', tgp: 'very high', 'data-price': 228360 },
+                { name: 'Radeon RX 6700 XT', compatibility: 'Tier2', tgp: 'medium', 'data-price': 35000 },
+                { name: 'Radeon RX 6750 XT', compatibility: 'Tier2', tgp: 'medium', 'data-price': 40000 },
+                { name: 'Radeon RX 6800', compatibility: 'Tier1', tgp: 'high', 'data-price': 50000 },
+                { name: 'Radeon RX 6800 XT', compatibility: 'Tier1', tgp: 'high', 'data-price': 55000 },
+                { name: 'Radeon RX 6900 XT', compatibility: 'Tier1', tgp: 'very high', 'data-price': 70000 },
+                { name: 'Radeon RX 6950 XT', compatibility: 'Tier1', tgp: 'very high', 'data-price': 75000 },
+                { name: 'Radeon RX 7600 XT', compatibility: 'Tier2', tgp: 'medium', 'data-price': 33641 },
+                { name: 'Radeon RX 7900 XT', compatibility: 'Tier0', tgp: 'very high', 'data-price': 104703 },
+                { name: 'Radeon RX 7900 XTX', compatibility: 'Tier0', tgp: 'very high', 'data-price': 113451 }
+            ];
+
+            // Filter compatible video cards based on selected processor compatibility
+            const compatibleVideoCards = videoCards.filter(card =>
+                card.compatibility === compatibilityTags[3] // Check compatibility based on the processor's tier
+            );
+
+            // Add compatible video cards to the select dropdown
+            compatibleVideoCards.forEach(card => {
+                const option = document.createElement('option');
+                option.value = card.name;
+                option.textContent = `${card.name} - ₽${(card['data-price']).toLocaleString()}`;
+                option.setAttribute('data-price', card['data-price']);
+                videoCardSelect.appendChild(option);
+            });
+        }
+
+        function calculateTotal() {
+    const selectedProcessor = document.getElementById('proc');
+    const selectedMotherboard = document.getElementById('matka');
+    const selectedVideoCard = document.getElementById('gpu');
+    const selectedPSU = document.getElementById('psu');
+    const selectedRAM = document.getElementById('ram');
+    const selectedSSD = document.getElementById('ssd');
+
+    const processorPrice = parseFloat(selectedProcessor.options[selectedProcessor.selectedIndex].getAttribute('data-price')) || 0;
+    const motherboardPrice = parseFloat(selectedMotherboard.options[selectedMotherboard.selectedIndex].getAttribute('data-price')) || 0;
+    const videoCardPrice = parseFloat(selectedVideoCard.options[selectedVideoCard.selectedIndex].getAttribute('data-price')) || 0;
+    const psuPrice = parseFloat(selectedPSU.options[selectedPSU.selectedIndex].getAttribute('data-price')) || 0;
+    const ramPrice = parseFloat(selectedRAM.options[selectedRAM.selectedIndex].getAttribute('data-price')) || 0;
+    const ssdPrice = parseFloat(selectedSSD.options[selectedSSD.selectedIndex].getAttribute('data-price')) || 0;
+
+    const totalPrice = processorPrice + motherboardPrice + videoCardPrice + psuPrice + ramPrice + ssdPrice;
+
+    document.getElementById('totalPrice').textContent = `₽${totalPrice.toLocaleString()}`;
+}
+    </script>
+</body>
+
+</html>
