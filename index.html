@@ -1,0 +1,91 @@
+Вот обновленная версия кода с добавленной базой данных видеокарт:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PC Component Selection</title>
+  <style>
+    /* CSS стили остаются неизменными */
+  </style>
+  <script>
+    // База данных процессоров
+    var cpus = {
+      "Amd Ryzen": {
+        "5600x": {"tier": "Tier2", "socket": "AM4", "price": 15000, "tgp": "low"},
+        "5800x": {"tier": "Tier1", "socket": "AM4", "price": 24000, "tgp": "high"},
+        "5950x": {"tier": "Tier0", "socket": "AM4", "price": 65000, "tgp": "very high"},
+        "7600x": {"tier": "Tier2", "socket": "AM5", "price": 25000, "tgp": "medium"},
+        "7700x": {"tier": "Tier1", "socket": "AM5", "price": 35000, "tgp": "high"},
+        "7900x": {"tier": "Tier1", "socket": "AM5", "price": 70000, "tgp": "very high"}
+      },
+      "Intel core": {
+        "12300f": {"tier": "Tier3", "socket": "LGA1700", "price": 10000, "tgp": "low"},
+        "12600k": {"tier": "Tier2", "socket": "LGA1700", "price": 15000, "tgp": "medium"},
+        "12700k": {"tier": "Tier1", "socket": "LGA1700", "price": 25000, "tgp": "high"},
+        "12900k": {"tier": "Tier0", "socket": "LGA1700", "price": 50000, "tgp": "very high"},
+        "13330f": {"tier": "Tier3", "socket": "LGA1700", "price": 15000, "tgp": "low"},
+        "13600k": {"tier": "Tier2", "socket": "LGA1700", "price": 20000, "tgp": "medium"},
+        "13700k": {"tier": "Tier1", "socket": "LGA1700", "price": 30000, "tgp": "high"},
+        "13900k": {"tier": "Tier0", "socket": "LGA1700", "price": 60000, "tgp": "very high"}
+      }
+    };
+
+    // База данных материнских плат
+    var motherboards = {
+      "AM5": {
+        "Tier 1": 30000,
+        "Tier0": 55000,
+        "Tier2": 20000
+      },
+      "AM4": {
+        "Tier1": 20000,
+        "Tier2": 10000
+      },
+      "LGA1700": {
+        "Tier2": 15000,
+        "Tier1": 30000,
+        "Tier0": 55000
+      }
+    };
+
+    // База данных видеокарт
+    var videoCards = {
+      "GeForce RTX 3060": { "low TGP": 25000, "tier 3": true },
+      "GeForce RTX 3060 Ti": { "low TGP": 30000, "tier 3": true },
+      "GeForce RTX 3070": { "medium TGP": 45000, "tier 2": true },
+      "GeForce RTX 3070 Ti": { "medium TGP": 50000, "tier 2": true },
+      "GeForce RTX 3080": { "high TGP": 70000, "tier 1": true },
+      "GeForce RTX 3080 Ti": { "very high TGP": 90000, "tier 1": true },
+      "GeForce RTX 3090": { "very high TGP": 130000, "tier 0": true },
+      "GeForce RTX 3090 Ti": { "very high TGP": 151800, "tier 0": true },
+      "GeForce RTX 4060": { "medium TGP": 36000, "tier 2": true },
+      "GeForce RTX 4060 Ti": { "medium TGP": 44591, "tier 2": true },
+      "GeForce RTX 4070": { "Super high TGP": 60734, "tier 1": true },
+      "GeForce RTX 4070 Ti": { "Super high TGP": 107273, "tier 1": true },
+      "GeForce RTX 4080": { "Super high TGP": 138000, "tier 0": true },
+      "GeForce RTX 4090": { "very high TGP": 228360, "tier 0": true },
+      "Radeon RX 6700 XT": { "medium TGP": 35000, "tier 2": true },
+      "Radeon RX 6750 XT": { "medium TGP": 40000, "tier 2": true },
+      "Radeon RX 6800": { "high TGP": 50000, "tier 1": true },
+      "Radeon RX 6800 XT": { "high TGP": 55000, "tier 1": true },
+      "Radeon RX 6900 XT": { "very high TGP": 70000, "tier 1": true },
+      "Radeon RX 6950 XT": { "very high TGP": 75000, "tier 1": true },
+      "Radeon RX 7600 XT": { "medium TGP": 33641, "tier 2": true },
+      "Radeon RX 7900 XT": { "very high TGP": 104703, "tier 0": true },
+      "Radeon RX 7900 XTX": { "very high TGP": 113451, "tier 0": true }
+    };
+
+    function calculateTotal() {
+      var cpuPrice = parseInt(document.getElementById("cpu").value);
+      var motherboardPrice = parseInt(document.getElementById("motherboard").value);
+      var gpuPrice = parseInt(document.getElementById("gpu").value);
+      var psuPrice = parseInt(document.getElementById("psu").value);
+      var ramPrice = parseInt(document.getElementById("ram").value);
+      var ssdPrice = parseInt(document.getElementById("ssd").value);
+
+      var total = cpuPrice + motherboardPrice + gpuPrice + psuPrice + ramPrice + ssdPrice;
+
+      document.getElementById("total").
